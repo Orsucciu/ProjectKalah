@@ -1,20 +1,22 @@
 #!/usr/bin/python
 import pygame
+from pygame import *
 from copy import copy
 import kalahGUI
 from kalahGUI import *
 import os, time, sys
 
-def KeyHandler():
-	for event in pygame.event.get():   
-		if event.type == QUIT:
-			loop = 0     
+def KeyHandler(event, shroom): #get the keyboard keys and do stuff
 
-		if event.type == K_LEFT:
+	if event.type == pygame.KEYDOWN:
+		
+		if event.key == pygame.QUIT:
+			loop = 0     
+		if event.key == pygame.K_LEFT:
 			moveLeft(shroom)
-		if event.type == K_UP:
+		if event.key == pygame.K_UP:
 			moveUp(shroom)
-		if event.type == K_RIGHT:
+		if event.key == pygame.K_RIGHT:
 			moveRight(shroom)
-		if event.type == K_DOWN:
+		if event.key == pygame.K_DOWN:
 			moveDown(shroom)
