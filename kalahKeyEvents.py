@@ -6,8 +6,14 @@ import kalahGUI
 from kalahGUI import *
 import os, time, sys
 
-def KeyHandler(event): #get the keyboard keys and do stuff
+def KeyHandler(event, boxes): #get the keyboard keys and do stuff
+	
+	if event.type == pygame.MOUSEBUTTONDOWN:
+		print pygame.mouse.get_pos()
+		coord = pygame.mouse.get_pos()
 
+		for element in boxes:
+			element.isClicked(coord[0], coord[1])
 	'''
 	if event.type == pygame.KEYDOWN: #dead code. leave it be
 

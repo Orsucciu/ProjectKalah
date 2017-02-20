@@ -80,30 +80,42 @@ class Box: #boxes are where the seeds are put
 		self.box[0] = pygame.transform.scale(self.box[0], (50, 50))
 		self.box[1] = (x,y) #the coordinates
 
-	def getRandCords():
-		box = self.get_rect()
+	def getRandCords(self):
+		box = self.box[0].get_rect()
 		x = randint(box.x, box.x + box.width)
 		y = randint(box.y, box.y + box.height)
-		return (x, y)
+		return [x, y]
 
-	def populate():
+	def populate(self, screen):
 		i = 0
 		while(i < self.seeds):
 			self.dots.append(Dot(i))
-			self.dots[i].createRect(getRandCords())
+			coord = self.getRandCords()
+			self.dots[i].createRect(coord[0], coord[1])
+			self.dots[i].Draw(screen)
 			i = i+1	
 
 	def Draw(self, screen):
-		screen.blit(self.box[0] , self.box[1])	
+		screen.blit(self.box[0] , self.box[1])
+
+	def isClicked(self, x, y): #this function will determine if a box is being clicked or not
+		isclicked = 1	#it will return 1 (true) or 0 (false)
+		#if(&&):		#on each click event, all the squares with this method will be called
+			
+		return isclicked 	#it will work this way : we get the mouse click's coordinates; and we will check if they are comprised between the box's position and the box's position plus its height/width
+
 
 class Dot: #dots are the seeds
 
-	def __init__(self):
-		self = self
+	def __init__(self, num):
+		self.num = num
+		self.dot = [1,1]
 
-	def createRect(x, y):
-		dot = [1,1]
-		dot[0] = pygame.image.load(os.path.join("assets", "dot.png")).convert_alpha()
-		dot[1] = (x, y)
-		return dot
+	def createRect(self, x, y):
+		self.dot[0] = pygame.image.load(os.path.join("assets", "seed.png")).convert()
+		self.dot[0] = pygame.transform.scale(self.dot[0], (10, 10))
+		self.dot[1] = (x, y)
+
+	def Draw(self, screen):
+		screen.blit(self.dot[0], self.dot[1])
 
