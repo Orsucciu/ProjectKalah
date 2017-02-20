@@ -77,6 +77,7 @@ class Box: #boxes are where the seeds are put
 
 	def createRect(self, x, y): #create the box
 		self.box[0] = pygame.image.load(os.path.join("assets","box.png")).convert() #the rect object
+		self.box[0] = pygame.transform.scale(self.box[0], (50, 50))
 		self.box[1] = (x,y) #the coordinates
 
 	def getRandCords():

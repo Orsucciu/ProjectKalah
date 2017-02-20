@@ -6,7 +6,7 @@ import kalahGUI
 from kalahGUI import *
 import os, time, sys
 
-def KeyHandler(event, shroom): #get the keyboard keys and do stuff
+def KeyHandler(event): #get the keyboard keys and do stuff
 
 	'''
 	if event.type == pygame.KEYDOWN: #dead code. leave it be
