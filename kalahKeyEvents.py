@@ -9,9 +9,9 @@ import os, time, sys
 def KeyHandler(event, shroom): #get the keyboard keys and do stuff
 
 	if event.type == pygame.KEYDOWN:
-		
+
 		if event.key == pygame.QUIT:
-			loop = 0     
+			loop = 0   
 		if event.key == pygame.K_LEFT:
 			moveLeft(shroom)
 		if event.key == pygame.K_UP:
