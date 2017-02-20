@@ -8,7 +8,8 @@ import os, time, sys
 
 def KeyHandler(event, shroom): #get the keyboard keys and do stuff
 
-	if event.type == pygame.KEYDOWN:
+	'''
+	if event.type == pygame.KEYDOWN: #dead code. leave it be
 
 		if event.key == pygame.QUIT:
 			loop = 0   
@@ -20,3 +21,4 @@ def KeyHandler(event, shroom): #get the keyboard keys and do stuff
 			moveRight(shroom)
 		if event.key == pygame.K_DOWN:
 			moveDown(shroom)
+	'''

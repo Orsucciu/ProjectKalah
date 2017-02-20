@@ -4,6 +4,8 @@ from copy import copy
 import os, time, sys
 from random import randint
 
+#where the graphics are
+
 def Prepare_window(): #create the game window
 	#os.environ['SDL_VIDEO_CENTERED'] = '1' #should center pygame window on the screen
 	pygame.init()
@@ -14,20 +16,16 @@ def Prepare_window(): #create the game window
 
 def LoadImages(): #loads the sprites
 	board = [1,1]
-	shroom = [1,1]
 	board[0] = pygame.image.load(os.path.join("assets","board.png")).convert()
 	board[0] = pygame.transform.scale(board[0], (800, 500))
-	shroom[0] = pygame.image.load(os.path.join("assets","shroom.png")).convert_alpha()
 	board[1] = (0,0)
-	shroom[1] = (50,50)
-	return [board, shroom]
+	return [board]
 
 
 
 def Draw(screen, assets): #draws all the surfaces in assets
 	for element in assets:
-		screen.blit(element[0], element[1])
-	pygame.display.flip()
+		screen.blit(element[0], element[1]) #this method is old, and is kinda same of box's one
 
 '''
 def Resize(screen, assets):
@@ -63,7 +61,7 @@ def moveRight(sprite):
 	sprite[1] = position
 
 
-class Box:
+class Box: #boxes are where the seeds are put
 
 	def __init__(self, seeds):
 		self.seeds = seeds
@@ -78,8 +76,8 @@ class Box:
 			self.seeds = self.seeds - 1
 
 	def createRect(self, x, y): #create the box
-		self.box[0] = pygame.image.load(os.path.join("assets","box.png")).convert()
-		self.box[1] = (x,y)
+		self.box[0] = pygame.image.load(os.path.join("assets","box.png")).convert() #the rect object
+		self.box[1] = (x,y) #the coordinates
 
 	def getRandCords():
 		box = self.get_rect()
@@ -94,7 +92,10 @@ class Box:
 			self.dots[i].createRect(getRandCords())
 			i = i+1	
 
-class Dot:
+	def Draw(self, screen):
+		screen.blit(self.box[0] , self.box[1])	
+
+class Dot: #dots are the seeds
 
 	def __init__(self):
 		self = self
