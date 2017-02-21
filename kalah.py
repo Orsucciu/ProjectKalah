@@ -41,7 +41,6 @@ i = 0
 while(i < 11):
 	boxes.append(Box(4))
 	boxes[i].createRect(x, y)
-	boxes[i].populate(screen) #POPULATE CALL NOT WORKING
 	x = x + 72
 	if(i > 6):
 		x = 52
@@ -63,7 +62,8 @@ while loop == 1:
 	Draw(screen, assets)
 	for element in boxes:
 		element.Draw(screen)
-	pygame.display.flip()		
+		element.populate(screen) #populate as to be called last
+	pygame.display.flip()		#the elements are drawn in the order they are called -> the dots have to be last or they're overdrawn
 
 	for event in pygame.event.get():   
 		KeyHandler(event, boxes)

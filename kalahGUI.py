@@ -92,7 +92,7 @@ class Box: #boxes are where the seeds are put
 			self.dots.append(Dot(i))
 			coord = self.getRandCords()
 			self.dots[i].createRect(coord[0], coord[1])
-			self.dots[i].Draw(screen)
+			self.dots[i].DrawDot(screen)
 			i = i+1	
 
 	def Draw(self, screen):
@@ -112,10 +112,10 @@ class Dot: #dots are the seeds
 		self.dot = [1,1]
 
 	def createRect(self, x, y):
-		self.dot[0] = pygame.image.load(os.path.join("assets", "seed.png")).convert()
-		self.dot[0] = pygame.transform.scale(self.dot[0], (10, 10))
+		self.dot[0] = pygame.image.load(os.path.join("assets", "seed.png")).convert_alpha()
+		self.dot[0] = pygame.transform.scale(self.dot[0], (5, 5))
 		self.dot[1] = (x, y)
 
-	def Draw(self, screen):
+	def DrawDot(self, screen):
 		screen.blit(self.dot[0], self.dot[1])
 
