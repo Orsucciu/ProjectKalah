@@ -31,21 +31,23 @@ print assets
 pygame.key.set_repeat(400, 30)
 
 boxes = list()
-x = 120 #coordinates. shouldn't be hardcoded but meh
-y = 11
+x = 135 #coordinates. shouldn't be hardcoded but meh
+y = 150
 #boxes are 37 on 37 squares
 #the houses coordinates are = 7,6 and 291,6; they are rectangles 42 on 268
 i = 0
+xChanged = 0
 ### BROKEN LOOP TO FIX ASAP
 ###
-while(i < 11):
+while(i < 12):
+	
 	boxes.append(Box(4))
 	boxes[i].createRect(x, y)
-	x = x + 72
-	if(i > 6):
-		x = 52
-		y = 100
-	y = y
+	x = x + 90
+	if(i >= 5 and xChanged == 0):
+		x = 135
+		y = 300
+		xChanged = 1
 	i = i +1
 ###
 ###

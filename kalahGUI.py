@@ -60,7 +60,6 @@ def moveRight(sprite):
 	position = position.move(position.x + 10, 0)
 	sprite[1] = position
 
-
 class Box: #boxes are where the seeds are put
 
 	def __init__(self, seeds):
@@ -77,16 +76,16 @@ class Box: #boxes are where the seeds are put
 
 	def createRect(self, x, y): #create the box
 		self.box[0] = pygame.image.load(os.path.join("assets","box.png")).convert() #the rect object
-		self.box[0] = pygame.transform.scale(self.box[0], (50, 50))
+		self.box[0] = pygame.transform.scale(self.box[0], (80, 80))
 		self.box[1] = (x,y) #the coordinates
 
-	def getRandCords(self):
+	def getRandCords(self): #gives random coordinates inside the box
 		box = self.box[0].get_rect()
 		x = randint(box.x, box.x + box.width)
 		y = randint(box.y, box.y + box.height)
 		return [x, y]
 
-	def populate(self, screen):
+	def populate(self, screen): #create the seeds in a box
 		i = 0
 		while(i < self.seeds):
 			self.dots.append(Dot(i))
@@ -99,11 +98,15 @@ class Box: #boxes are where the seeds are put
 		screen.blit(self.box[0] , self.box[1])
 
 	def isClicked(self, x, y): #this function will determine if a box is being clicked or not
-		isclicked = 1	#it will return 1 (true) or 0 (false)
 		#if(&&):		#on each click event, all the squares with this method will be called
-			
-		return isclicked 	#it will work this way : we get the mouse click's coordinates; and we will check if they are comprised between the box's position and the box's position plus its height/width
-
+		box = self.box[0].get_rect()
+		if(x >= box.x and x <= box.x + box.width and y >= box.y and y <= box.y + box.height):
+			print self
+			return 1
+		else:
+			print "fail..."
+			print "x = " + str(x) + " box.x = " + str(box.x) + " box.width = " + str(box.width) + " y = " + str(y) + " box.y = " + str(box.y)
+			return 0
 
 class Dot: #dots are the seeds
 
