@@ -43,6 +43,8 @@ while(i < 12):
 	
 	boxes.append(Box(4))
 	boxes[i].createRect(x, y)
+	boxes[i].position[0] = x
+	boxes[i].position[1] = y
 	x = x + 90
 	if(i >= 5 and xChanged == 0):
 		x = 135

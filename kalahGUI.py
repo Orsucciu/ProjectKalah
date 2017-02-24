@@ -66,6 +66,7 @@ class Box: #boxes are where the seeds are put
 		self.seeds = seeds
 		self.dots = list()
 		self.box = [1,1]
+		self.position = [1,1]
 
 	def addSeed():
 		self.seeds = self.seeds + 1
@@ -79,18 +80,20 @@ class Box: #boxes are where the seeds are put
 		self.box[0] = pygame.transform.scale(self.box[0], (80, 80))
 		self.box[1] = (x,y) #the coordinates
 
-	def getRandCords(self): #gives random coordinates inside the box
-		box = self.box[0].get_rect()
-		x = randint(box.x, box.x + box.width)
-		y = randint(box.y, box.y + box.height)
-		return [x, y]
+	#def getRandCords(self): #gives random coordinates inside the box
+	#	box = self.box[0].get_rect()
+	#	x = randint(self.position[0] - 10, (self.position[0] + box.width) - 10)  ### These two lines are to be modified lightly. So the dots stay far from the borders
+	#	y = randint(self.position[1] - 10, (self.position[1] + box.height) - 10) ###
+	#	return [x, y]
 
+	###RandCords shouldn't be declared here
+	
 	def populate(self, screen): #create the seeds in a box
 		i = 0
 		while(i < self.seeds):
-			self.dots.append(Dot(i))
-			coord = self.getRandCords()
-			self.dots[i].createRect(coord[0], coord[1])
+			self.dots.append(Dot(i, self))
+			#coord = self.getRandCords()
+			self.dots[i].createRect(self.dot[i].position[0], self.dot[i].position[1])
 			self.dots[i].DrawDot(screen)
 			i = i+1	
 
@@ -110,9 +113,16 @@ class Box: #boxes are where the seeds are put
 
 class Dot: #dots are the seeds
 
-	def __init__(self, num):
+	def __init__(self, num, parentBox):
 		self.num = num
 		self.dot = [1,1]
+		self.position = [1,1]
+		
+		coords = self.getRandCords(parentBox)
+		self.position[0] = coords[0]
+		self.position[1] = coords[1]
+		
+		print "dot created ! " + str(self.num)
 
 	def createRect(self, x, y):
 		self.dot[0] = pygame.image.load(os.path.join("assets", "seed.png")).convert_alpha()
@@ -121,4 +131,10 @@ class Dot: #dots are the seeds
 
 	def DrawDot(self, screen):
 		screen.blit(self.dot[0], self.dot[1])
+	
+	def getRandCords(self, Pbox): #gives random coordinates inside the box
+		box = Pbox.box[0].get_rect()
+		x = randint(box.position[0] - 10, (box.position[0] + box.width) - 10)  ### These two lines are to be modified lightly. So the dots stay far from the borders
+		y = randint(box.position[1] - 10, (box.position[1] + box.height) - 10) ###
+		return [x, y]
 
