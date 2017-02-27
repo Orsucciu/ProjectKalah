@@ -64,9 +64,12 @@ class Box: #boxes are where the seeds are put
 
 	def __init__(self, seeds):
 		self.seeds = seeds
-		self.dots = list()
-		self.box = [1,1]
+		self.dots = list() #contains the dots stored in the box
+		self.box = [1,1] #contains the surface object, and its coordinates (in the box[1])
 		self.position = [1,1]
+		
+	def getCoords(self):
+		return [ self.box[1][0], self.box[1][1], self.box[0].get_width(), self.box[0].get_height() ] #returns data in this order : box's x, box's y, box's width, box's height
 
 	def addSeed():
 		self.seeds = self.seeds + 1
@@ -79,22 +82,24 @@ class Box: #boxes are where the seeds are put
 		self.box[0] = pygame.image.load(os.path.join("assets","box.png")).convert() #the rect object
 		self.box[0] = pygame.transform.scale(self.box[0], (80, 80))
 		self.box[1] = (x,y) #the coordinates
-
-	#def getRandCords(self): #gives random coordinates inside the box
-	#	box = self.box[0].get_rect()
-	#	x = randint(self.position[0] - 10, (self.position[0] + box.width) - 10)  ### These two lines are to be modified lightly. So the dots stay far from the borders
-	#	y = randint(self.position[1] - 10, (self.position[1] + box.height) - 10) ###
-	#	return [x, y]
-
-	###RandCords shouldn't be declared here
 	
 	def populate(self, screen): #create the seeds in a box
-		i = 0
+		i = 0					#the seeds will be distributed by rows of four
+		coord = self.getCoords()
+		x = coord[0] + 10
+		y = coord[1] + 5
+		
 		while(i < self.seeds):
+			if(i % 4 == 0):
+				x = coord[0] + 5
+				y = y + 10
+				
 			self.dots.append(Dot(i, self))
-			#coord = self.getRandCords()
-			self.dots[i].createRect(self.dot[i].position[0], self.dot[i].position[1])
+			self.dots[i].createRect(x, y)
 			self.dots[i].DrawDot(screen)
+			
+			x = x + 10
+			
 			i = i+1	
 
 	def Draw(self, screen):
@@ -122,7 +127,7 @@ class Dot: #dots are the seeds
 		self.position[0] = coords[0]
 		self.position[1] = coords[1]
 		
-		print "dot created ! " + str(self.num)
+		#print "dot created ! " + str(self.num)
 
 	def createRect(self, x, y):
 		self.dot[0] = pygame.image.load(os.path.join("assets", "seed.png")).convert_alpha()
@@ -132,9 +137,12 @@ class Dot: #dots are the seeds
 	def DrawDot(self, screen):
 		screen.blit(self.dot[0], self.dot[1])
 	
+	###dead code ?
 	def getRandCords(self, Pbox): #gives random coordinates inside the box
-		box = Pbox.box[0].get_rect()
-		x = randint(box.position[0] - 10, (box.position[0] + box.width) - 10)  ### These two lines are to be modified lightly. So the dots stay far from the borders
-		y = randint(box.position[1] - 10, (box.position[1] + box.height) - 10) ###
+		#the pbox arg is the Parent box, where the dot will be stored
+		box = Pbox.box[1]
+		x = randint(self.position[0] - 10, (self.position[0] + box[0]) - 10)  ### These two lines are to be modified lightly. So the dots stay far from the borders
+		y = randint(self.position[1] - 10, (self.position[1] + box[1]) - 10) ###
+		
 		return [x, y]
-
+	###

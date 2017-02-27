@@ -23,8 +23,6 @@ game = Kalah([0,4,4,4,4,4,4,0,4,4,4,4,4,4])
 
 loop = 1
 
-seeds_per_box = 4
-
 screen = Prepare_window()
 assets = LoadImages()
 print assets
@@ -58,6 +56,7 @@ Draw(screen, assets)
 for element in boxes:
 	print element.box[0]
 	print element.box[1]
+	print element.getCoords()
 	element.Draw(screen)
 	
 pygame.display.flip()	
@@ -66,7 +65,7 @@ while loop == 1:
 	Draw(screen, assets)
 	for element in boxes:
 		element.Draw(screen)
-		element.populate(screen) #populate as to be called last
+		element.populate(screen) #populate has to be called last
 	pygame.display.flip()		#the elements are drawn in the order they are called -> the dots have to be last or they're overdrawn
 
 	for event in pygame.event.get():   
