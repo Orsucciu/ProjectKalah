@@ -62,17 +62,56 @@ def moveRight(sprite):
 
 class Kalah: #Kalah object. the game board
 
-	def __init__(self, board):
-		self.board = board
+	def __init__(self):
+		self.board = [4,4,4,4,4,4,4,4,4,4,4,4] #represent the board's boxes
+		self.houses = [0, 0] #represent the houses
 		self.turn = 1 #represent the player's turn. 1 for you, and 2 for anyone someone. Or whatever it doesn't matter
 
 	def getBoard(self):
 		return self.board
 
+class House: #houses are where the seeds end up
+	
+	def __init__(self): #houses are really like boxes, but they can't move their dots out and stuff like that
+		self.seeds = 0
+		self.dots = list()
+		self.house = [1,1]
+	
+	def getCoords(self):
+		return [ self.house[1][0], self.house[1][1], self.house[0].get_width(), self.house[0].get_height() ] #returns data in this order : box's x, box's y, box's width, box's height
+	
+	def createRect(self, x, y): #create the house
+		self.house[0] = pygame.image.load(os.path.join("assets","house.png")).convert_alpha() #the rect object #change this to convert() to see the house
+		self.house[0] = pygame.transform.scale(self.house[0], (100, 480))
+		self.house[1] = (x,y) #the coordinates
+	
+	def Draw(self, screen):
+		screen.blit(self.house[0] , self.house[1])
+	
+	def populate(self, screen): #create the seeds in a box
+		i = 0					#the seeds will be distributed by rows of four
+		coord = self.getCoords()
+		x = coord[0] + 10
+		y = coord[1] + 5
+	
+		while(i < self.seeds):
+			if(i % 4 == 0):
+				x = coord[0] + 5
+				y = y + 10
+				
+			self.dots.append(Dot(i, self))
+			self.dots[i].createRect(x, y)
+			self.dots[i].DrawDot(screen)
+			
+			x = x + 10
+			
+			i = i+1
+			
 class Box: #boxes are where the seeds are put
 
-	def __init__(self, seeds):
+	def __init__(self, seeds, number): 
 		self.seeds = seeds
+		self.number = number #number is used to keep track of the boxes (like, to know which one is it)
 		self.dots = list() #contains the dots stored in the box
 		self.box = [1,1] #contains the surface object, and its coordinates (in the box[1])
 		self.position = [1,1]
@@ -80,10 +119,10 @@ class Box: #boxes are where the seeds are put
 	def getCoords(self):
 		return [ self.box[1][0], self.box[1][1], self.box[0].get_width(), self.box[0].get_height() ] #returns data in this order : box's x, box's y, box's width, box's height
 
-	def addSeed():
+	def addSeed(self):
 		self.seeds = self.seeds + 1
 
-	def removeSeed():
+	def removeSeed(self):
 		if self.seeds > 0:
 			self.seeds = self.seeds - 1
 
@@ -116,25 +155,25 @@ class Box: #boxes are where the seeds are put
 
 	def isClicked(self, x, y): #this function will determine if a box is being clicked or not
 		#if(&&):		#on each click event, all the squares with this method will be called
-		boxCoords = self.getCoords() #if a box is being clicked, this function will return it.
+		boxCoords = self.getCoords() #if a box is being clicked, this function will return true
 		if(x >= boxCoords[0] and x <=boxCoords[0] + 80 and y >= boxCoords[1] and y <= boxCoords[1] + 80): #box's height and width are harcoded. could be changed in the future
 			print self
-			return self
+			print self.number
+			return True
 		else:
 			#print "fail..." #those two are debug lines
 			#print "x = " + str(x) + " box.x = " + str(boxCoords[0]) + " box.width = " + str(80) + " y = " + str(y) + " box.y = " + str(boxCoords[1])
-			return 0
+			return False
+		
+	def distributeSeeds(self, boxes):
+		print "hello"
 
 class Dot: #dots are the seeds
 
-	def __init__(self, num, parentBox):
+	def __init__(self, num, parentBox): #parentbox can be removed, but no time for this
 		self.num = num
 		self.dot = [1,1]
 		self.position = [1,1]
-		
-		coords = self.getRandCords(parentBox)
-		self.position[0] = coords[0]
-		self.position[1] = coords[1]
 		
 		#print "dot created ! " + str(self.num)
 
@@ -147,11 +186,11 @@ class Dot: #dots are the seeds
 		screen.blit(self.dot[0], self.dot[1])
 	
 	###dead code ?
-	def getRandCords(self, Pbox): #gives random coordinates inside the box
+	'''def getRandCords(self, Pbox): #gives random coordinates inside the box
 		#the pbox arg is the Parent box, where the dot will be stored
 		box = Pbox.box[1]
 		x = randint(self.position[0] - 10, (self.position[0] + box[0]) - 10)  ### These two lines are to be modified lightly. So the dots stay far from the borders
 		y = randint(self.position[1] - 10, (self.position[1] + box[1]) - 10) ###
 		
-		return [x, y]
+		return [x, y]'''
 	###

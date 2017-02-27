@@ -9,17 +9,17 @@ import os, time, sys
 def KeyHandler(event, boxes): #get the keyboard keys and do stuff
 
 	if event.type == pygame.QUIT:
-          sys.exit()
+		sys.exit()
 
 	if event.type == pygame.MOUSEBUTTONDOWN:
 		print pygame.mouse.get_pos()
 		coord = pygame.mouse.get_pos()
 
 		for element in boxes:
-			element.isClicked(coord[0], coord[1]) #the argument is the mouse's coords
-
-     
-'''
+			if (element.isClicked(coord[0], coord[1]) == True):
+				element.distributeSeeds(boxes)
+	
+	'''
 	if event.type == pygame.KEYDOWN: #dead code. leave it be
 
 		if event.key == pygame.QUIT:
