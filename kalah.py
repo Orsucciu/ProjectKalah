@@ -11,14 +11,6 @@ from kalahGUI import *
 import kalahKeyEvents
 from kalahKeyEvents import *
 
-class Kalah: #Kalah object. the game board
-
-	def __init__(self, board):
-		self.board = board
-
-	def getBoard(self):
-		return self.board
-
 game = Kalah([0,4,4,4,4,4,4,0,4,4,4,4,4,4])
 
 loop = 1

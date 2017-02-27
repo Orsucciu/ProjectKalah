@@ -60,6 +60,15 @@ def moveRight(sprite):
 	position = position.move(position.x + 10, 0)
 	sprite[1] = position
 
+class Kalah: #Kalah object. the game board
+
+	def __init__(self, board):
+		self.board = board
+		self.turn = 1 #represent the player's turn. 1 for you, and 2 for anyone someone. Or whatever it doesn't matter
+
+	def getBoard(self):
+		return self.board
+
 class Box: #boxes are where the seeds are put
 
 	def __init__(self, seeds):
@@ -107,13 +116,13 @@ class Box: #boxes are where the seeds are put
 
 	def isClicked(self, x, y): #this function will determine if a box is being clicked or not
 		#if(&&):		#on each click event, all the squares with this method will be called
-		box = self.box[0].get_rect()
-		if(x >= box.x and x <= box.x + box.width and y >= box.y and y <= box.y + box.height):
+		boxCoords = self.getCoords() #if a box is being clicked, this function will return it.
+		if(x >= boxCoords[0] and x <=boxCoords[0] + 80 and y >= boxCoords[1] and y <= boxCoords[1] + 80): #box's height and width are harcoded. could be changed in the future
 			print self
-			return 1
+			return self
 		else:
-			print "fail..."
-			print "x = " + str(x) + " box.x = " + str(box.x) + " box.width = " + str(box.width) + " y = " + str(y) + " box.y = " + str(box.y)
+			#print "fail..." #those two are debug lines
+			#print "x = " + str(x) + " box.x = " + str(boxCoords[0]) + " box.width = " + str(80) + " y = " + str(y) + " box.y = " + str(boxCoords[1])
 			return 0
 
 class Dot: #dots are the seeds
