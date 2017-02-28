@@ -79,4 +79,4 @@ while loop == 1:
 	pygame.display.flip()		#the elements are drawn in the order they are called -> the dots have to be last or they're overdrawn
 
 	for event in pygame.event.get():   
-		KeyHandler(event, boxes, houses)
+		KeyHandler(event, boxes, houses, game) #the parameters are : the events happening, the list of boxes, the list of houses, and the kalah bozrd (which contains some data)
