@@ -101,8 +101,9 @@ def whoWon(houses):
 def canCurrentPlayerPlay(boxes, kalah): #says if the player of the current turn can play. Takes the boxes (to see if they're empty) and the board (to get the player) as param
 	seeds = 0
 	if(kalah.turn == 1):
-		for element in boxes and element.number < 6:
-			seeds = seeds + element.getSeeds()
+		for element in boxes:
+			if element.number < 6:	
+				seeds = seeds + element.getSeeds()
 			
 		if(seeds > 0):
 			return True
@@ -110,8 +111,9 @@ def canCurrentPlayerPlay(boxes, kalah): #says if the player of the current turn 
 			return False
 	
 	if(kalah.turn == 2):
-		for element in boxes and element.number > 5:
-			seeds = seeds + element.getSeeds()
+		for element in boxes:
+			if element.number > 5:
+				seeds = seeds + element.getSeeds()
 			
 		if(seeds > 0):
 			return True
