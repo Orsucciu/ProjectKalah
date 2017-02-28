@@ -27,38 +27,111 @@ def Draw(screen, assets): #draws all the surfaces in assets
 	for element in assets:
 		screen.blit(element[0], element[1]) #this method is old, and is kinda same of box's one
 
-'''
-def Resize(screen, assets):
-	transformed = []
-	size = screen.get_size()
-	for element in assets:
-		element = pygame.transform.scale(element, (screen[0], screen[1]))
-		transformed.append(element)
-	return transformed
-'''
+def initText(): #does stuff so i can draw over the screen.
+	pygame.font.init()
+	font_path = "assets/Font/FantasqueSansMono-Regular.ttf"
+	font_size = 32
+	return pygame.font.Font(font_path, font_size)
 
-def moveLeft(sprite): #move a pygame surface object in a direction
-	position = sprite[0].get_rect()
-	print position
-	print type(position)
-	print position.x
-	position = position.move(position.x -10, 0)
-	sprite[1] = position
+def printText(text, screen, fontObj, x, y):
+	display = fontObj.render(text, 1, (0, 0, 0))
+	screen.blit(display, (x, y))
+	
+def textPrinter(text, screen, fontObj, x, y, delay): #almost same as printText but do some more stuff
+	printText(text, screen, fontObj, x, y)			#delay is the milliseconds. Integer
+	print text
+	pygame.display.flip()
+	pygame.time.delay(delay) #i know this is dirty im' sorry
+											#i'm really sorry it's disgusting i doesn't even really does what i want	
 
-def moveUp(sprite):
-	position = sprite[0].get_rect()
-	position = position.move(0, position.y -10)
-	sprite[1] = position
+def checkRules(box, game, houses, boxes, screen, fontObj): #this is going to check if kalah rules apply.
+	freeTurn = False	
 
-def moveDown(sprite):
-	position = sprite[0].get_rect()
-	position = position.move(0, position.y +10)
-	sprite[1] = position
+	if(isinstance(box, Box)):
+		print "last box sowed : " + str(box.number)
+		if(box.seeds == 1): #the box have been sowed just now. you empty the opposite one
+			print "the opposite box is : " + str(getOppositeBox(box))
+		
+	if(isinstance(box, House)): #check if the last play filled a player's house (and gave him another turn)
+		if(box == houses[0] and game.turn == 2):
+			print "player two gets another turn"
+			freeTurn = True
+		if(box == houses[1] and game.turn == 1):
+			print "player one gets another turn"
+			freeTurn = True
+	
+	if(freeTurn == False): #handle which player turn's it is.
+		if(game.turn == 1):
+			game.turn = 2
+		else:
+			game.turn = 1
+	
+	if(canCurrentPlayerPlay(boxes, game) == False):
+		emptyAllBoxes(boxes, houses)
+		print "game finished !"
+		result = whoWon(houses)
+		if(result == 0):
+			textPrinter("player 1 won !!! Mazeltov", screen, fontObj, 148, 60, 3000)
+		if(result == 1):
+			textPrinter("player 2 won !!! Mazeltov", screen, fontObj, 148, 60, 3000)
+		if(result == 3):
+			textPrinter("it's a draw.", screen, fontObj, 148, 60, 3000)
 
-def moveRight(sprite):
-	position = sprite[0].get_rect()
-	position = position.move(position.x + 10, 0)
-	sprite[1] = position
+def getOppositeBox(box): #takes a box as a parameter and returns the number|the box opposed to it
+	return (11 - box.number)
+
+def areAllBoxesEmpty(boxes): #checks if all the boxes are empty
+	seeds = 0
+	for element in boxes:
+		seeds = seeds + element.getSeeds()
+	
+	if(seeds == 0):
+		return True
+	else:
+		return False
+
+def whoWon(houses):
+	if(houses[0].getSeeds() > houses[1].getSeeds()):
+		return 1 #player 2 won
+	elif(houses[1].getSeeds() > houses[0].getSeeds()):
+		return 0 #player 1 won
+	elif(houses[0].getSeeds() == houses[1].getSeeds()):
+		return 3 #it's a draw !!!
+
+def canCurrentPlayerPlay(boxes, kalah): #says if the player of the current turn can play. Takes the boxes (to see if they're empty) and the board (to get the player) as param
+	seeds = 0
+	if(kalah.turn == 1):
+		for element in boxes and element.number < 6:
+			seeds = seeds + element.getSeeds()
+			
+		if(seeds > 0):
+			return True
+		else:
+			return False
+	
+	if(kalah.turn == 2):
+		for element in boxes and element.number > 5:
+			seeds = seeds + element.getSeeds()
+			
+		if(seeds > 0):
+			return True
+		else:
+			return False
+		
+def emptyAllBoxes(boxes, houses): #to be called when a player can't play anymore. it puts the remaining seeds in the corresponding house
+	seeds0 = 0
+	seeds1 = 0
+	for element in boxes:
+		if(element.number < 6):
+			seeds1 = seeds1 + element.getSeeds()
+			element.removeAllSeeds()
+			houses[1].addSeeds(seeds1)
+		
+		if(element.number > 5):
+			seeds0 = seeds0 + element.getSeeds()
+			element.removeAllSeeds()
+			houses[0].addSeeds(seeds0)
+		
 
 class Kalah: #Kalah object. the game board
 
@@ -79,7 +152,13 @@ class House: #houses are where the seeds end up
 	
 	def addSeed(self):
 		self.seeds = self.seeds + 1
-
+	
+	def addSeeds(self, number):
+		self.seeds = self.seeds + number
+		
+	def getSeeds(self):
+		return self.seeds
+	
 	def removeSeed(self):
 		if self.seeds > 0:
 			self.seeds = self.seeds - 1
@@ -123,6 +202,15 @@ class Box: #boxes are where the seeds are put
 		self.box = [1,1] #contains the surface object, and its coordinates (in the box[1])
 		self.position = [1,1]
 		
+	def isEmpty(self):
+		if(self.getSeeds() == 0):
+			return True
+		else:
+			return False
+	
+	def getSeeds(self):
+		return self.seeds
+
 	def getCoords(self):
 		return [ self.box[1][0], self.box[1][1], self.box[0].get_width(), self.box[0].get_height() ] #returns data in this order : box's x, box's y, box's width, box's height
 
@@ -132,6 +220,9 @@ class Box: #boxes are where the seeds are put
 	def removeSeed(self):
 		if self.seeds > 0:
 			self.seeds = self.seeds - 1
+	
+	def removeAllSeeds(self): #remove all the seeds of a box and return how much were removed
+		self.seeds = 0 #used for when you sow an empty box, with the opposite one non-empty
 
 	def createRect(self, x, y): #create the box
 		self.box[0] = pygame.image.load(os.path.join("assets","box.png")).convert() #the rect object
@@ -172,28 +263,43 @@ class Box: #boxes are where the seeds are put
 			#print "x = " + str(x) + " box.x = " + str(boxCoords[0]) + " box.width = " + str(80) + " y = " + str(y) + " box.y = " + str(boxCoords[1])
 			return False
 		
-	def distributeSeeds(self, boxes, houses): #distribute the seeds in the boxes and houses. annoying as fuck
+	def distributeSeeds(self, boxes, houses, game, screen, fontObj): #distribute the seeds in the boxes and houses. annoying as fuck
+		lastBox = None #this will contain the last object we put a seed in
 		
 		i = self.number
 		while(self.seeds > 0 ):
 			
-			if(self.seeds > 0):
-				if(i != 11 and i != 5):#this is broken
+			if(self.seeds > 0): #can be removed
+				if(i != 11 and i != 5):#this is broken (or not in the end. it's not)
 					i = i +1
 					boxes[i].addSeed()
+					if(self.seeds == 1):
+						lastBox = boxes[i]
+						#checkRules(lastBox)
 				elif(i == 5):
 					i = 6
 					houses[1].addSeed()
 					self.removeSeed()
+					lastBox = houses[1]
 					if(self.seeds > 0):
 						boxes[6].addSeed()
+						if(self.seeds == 1):
+							lastBox = boxes[6]
+							#checkRules(lastBox)
 				elif(i == 11):
 					i = 0
 					houses[0].addSeed()
 					self.removeSeed()
+					lastBox = houses[0]
 					if(self.seeds > 0):		
 						boxes[0].addSeed()
-			
+						if(self.seeds == 1):
+							lastBox = boxes[0]
+							#checkRules(lastBox)
+		
+			if(isinstance(lastBox, Box) or isinstance(lastBox, House)):
+				checkRules(lastBox, game, houses, boxes, screen, fontObj)
+				
 			self.removeSeed()
 			#i = i + 1
 

@@ -15,6 +15,7 @@ game = Kalah()
 
 loop = 1
 
+fontObj = initText() #prepare the font.
 screen = Prepare_window()
 assets = LoadImages()
 print assets
@@ -68,6 +69,7 @@ pygame.display.flip()
 ###
 
 while loop == 1:
+	
 	Draw(screen, assets)
 	for element in houses:
 		element.Draw(screen)
@@ -76,7 +78,10 @@ while loop == 1:
 	for element in boxes:
 		element.Draw(screen)
 		element.populate(screen) #populate has to be called last
-	pygame.display.flip()		#the elements are drawn in the order they are called -> the dots have to be last or they're overdrawn
-
+	
+	printText("player " + str(game.turn) + "'s turn.", screen, fontObj, 148, 20)
+	
 	for event in pygame.event.get():   
-		KeyHandler(event, boxes, houses, game) #the parameters are : the events happening, the list of boxes, the list of houses, and the kalah bozrd (which contains some data)
+		KeyHandler(event, boxes, houses, game, screen, fontObj)
+	
+	pygame.display.flip()		#the elements are drawn in the order they are called -> the dots have to be last or they're overdrawn

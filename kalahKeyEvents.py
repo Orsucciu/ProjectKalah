@@ -6,7 +6,7 @@ import kalahGUI
 from kalahGUI import *
 import os, time, sys
 
-def KeyHandler(event, boxes, houses): #get the keyboard keys and do stuff
+def KeyHandler(event, boxes, houses, game, screen, fontObj): #get the keyboard keys and do stuff
 
 	if event.type == pygame.QUIT:
 		sys.exit()
@@ -17,19 +17,12 @@ def KeyHandler(event, boxes, houses): #get the keyboard keys and do stuff
 
 		for element in boxes:
 			if (element.isClicked(coord[0], coord[1]) == True):
-				element.distributeSeeds(boxes, houses)
-	
-	'''
-	if event.type == pygame.KEYDOWN: #dead code. leave it be
-
-		if event.key == pygame.QUIT:
-			loop = 0   
-		if event.key == pygame.K_LEFT:
-			moveLeft(shroom)
-		if event.key == pygame.K_UP:
-			moveUp(shroom)
-		if event.key == pygame.K_RIGHT:
-			moveRight(shroom)
-		if event.key == pygame.K_DOWN:
-			moveDown(shroom)
-	'''
+				if((game.turn == 1 and element.number < 6) or (game.turn == 2 and element.number > 5)):
+					element.distributeSeeds(boxes, houses, game, screen, fontObj)
+				else:
+					printText("Invalid move !", screen, fontObj, 148, 60)
+					print "Invalid move. Cheater."
+					pygame.display.flip()
+					pygame.time.delay(1000) #i know this is dirty im' sorry
+											#i'm really sorry it's disgusting i doesn't even really does what i want	
+				
