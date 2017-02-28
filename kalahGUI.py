@@ -48,9 +48,19 @@ def checkRules(box, game, houses, boxes, screen, fontObj): #this is going to che
 	freeTurn = False	
 
 	if(isinstance(box, Box)):
+		seeds = 0
 		print "last box sowed : " + str(box.number)
 		if(box.seeds == 1): #the box have been sowed just now. you empty the opposite one
-			print "the opposite box is : " + str(getOppositeBox(box))
+			if(game.turn == 1 and box.number < 6):	
+				print "the opposite box is : " + str(getOppositeBox(box))
+				seeds = seeds + box.removeAllSeeds() #the removeAllSeeds functions returns the seeds removed
+				seeds = seeds + boxes[getOppositeBox(box)].removeAllSeeds()
+				houses[1].addSeeds(seeds)
+			if(game.turn == 2 and box.number > 5):
+				print "the opposite box is : " + str(getOppositeBox(box))
+				seeds = seeds + box.removeAllSeeds() #the removeAllSeeds functions returns the seeds removed
+				seeds = seeds + boxes[getOppositeBox(box)].removeAllSeeds()
+				houses[0].addSeeds(seeds)
 		
 	if(isinstance(box, House)): #check if the last play filled a player's house (and gave him another turn)
 		if(box == houses[0] and game.turn == 2):
@@ -224,7 +234,9 @@ class Box: #boxes are where the seeds are put
 			self.seeds = self.seeds - 1
 	
 	def removeAllSeeds(self): #remove all the seeds of a box and return how much were removed
+		seeds = self.seeds
 		self.seeds = 0 #used for when you sow an empty box, with the opposite one non-empty
+		return seeds
 
 	def createRect(self, x, y): #create the box
 		self.box[0] = pygame.image.load(os.path.join("assets","box.png")).convert() #the rect object
