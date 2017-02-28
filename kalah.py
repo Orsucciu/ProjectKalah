@@ -31,7 +31,7 @@ houses[1].createRect(685, 11)
 boxes = list()
 ### boxes creation
 x = 135 #coordinates. shouldn't be hardcoded but meh
-y = 150
+y = 300
 #boxes are 37 on 37 squares
 #the houses coordinates are = 7,6 and 291,6; they are rectangles 42 on 268
 i = 0
@@ -47,7 +47,7 @@ while(i < 12):
 		x = x + 90
 	if(i >= 5 and xChanged == 0):
 		x = x - 90
-		y = 300
+		y = 150
 		#xChanged = 1
 	i = i +1
 ###
