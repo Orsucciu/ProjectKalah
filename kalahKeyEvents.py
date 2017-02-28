@@ -6,7 +6,7 @@ import kalahGUI
 from kalahGUI import *
 import os, time, sys
 
-def KeyHandler(event, boxes): #get the keyboard keys and do stuff
+def KeyHandler(event, boxes, houses): #get the keyboard keys and do stuff
 
 	if event.type == pygame.QUIT:
 		sys.exit()
@@ -17,7 +17,7 @@ def KeyHandler(event, boxes): #get the keyboard keys and do stuff
 
 		for element in boxes:
 			if (element.isClicked(coord[0], coord[1]) == True):
-				element.distributeSeeds(boxes)
+				element.distributeSeeds(boxes, houses)
 	
 	'''
 	if event.type == pygame.KEYDOWN: #dead code. leave it be

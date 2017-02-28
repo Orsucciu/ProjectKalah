@@ -43,11 +43,12 @@ while(i < 12):
 	boxes[i].createRect(x, y)
 	boxes[i].position[0] = x
 	boxes[i].position[1] = y
-	x = x + 90
+	if(i <= 5):	
+		x = x + 90
 	if(i >= 5 and xChanged == 0):
-		x = 135
+		x = x - 90
 		y = 300
-		xChanged = 1
+		#xChanged = 1
 	i = i +1
 ###
 
@@ -78,4 +79,4 @@ while loop == 1:
 	pygame.display.flip()		#the elements are drawn in the order they are called -> the dots have to be last or they're overdrawn
 
 	for event in pygame.event.get():   
-		KeyHandler(event, boxes)
+		KeyHandler(event, boxes, houses)

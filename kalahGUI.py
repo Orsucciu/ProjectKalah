@@ -77,6 +77,13 @@ class House: #houses are where the seeds end up
 		self.dots = list()
 		self.house = [1,1]
 	
+	def addSeed(self):
+		self.seeds = self.seeds + 1
+
+	def removeSeed(self):
+		if self.seeds > 0:
+			self.seeds = self.seeds - 1
+	
 	def getCoords(self):
 		return [ self.house[1][0], self.house[1][1], self.house[0].get_width(), self.house[0].get_height() ] #returns data in this order : box's x, box's y, box's width, box's height
 	
@@ -165,8 +172,30 @@ class Box: #boxes are where the seeds are put
 			#print "x = " + str(x) + " box.x = " + str(boxCoords[0]) + " box.width = " + str(80) + " y = " + str(y) + " box.y = " + str(boxCoords[1])
 			return False
 		
-	def distributeSeeds(self, boxes):
-		print "hello"
+	def distributeSeeds(self, boxes, houses): #distribute the seeds in the boxes and houses. annoying as fuck
+		
+		i = self.number
+		while(self.seeds > 0 ):
+			
+			if(self.seeds > 0):
+				if(i != 11 and i != 5):#this is broken
+					i = i +1
+					boxes[i].addSeed()
+				elif(i == 5):
+					i = 6
+					houses[1].addSeed()
+					self.removeSeed()
+					if(self.seeds > 0):
+						boxes[6].addSeed()
+				elif(i == 11):
+					i = 0
+					houses[0].addSeed()
+					self.removeSeed()
+					if(self.seeds > 0):		
+						boxes[0].addSeed()
+			
+			self.removeSeed()
+			#i = i + 1
 
 class Dot: #dots are the seeds
 
