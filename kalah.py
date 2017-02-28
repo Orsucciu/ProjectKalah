@@ -23,8 +23,8 @@ pygame.key.set_repeat(400, 30)
 
 houses = list()
 ### houses creation loop
-houses.append(House())
-houses.append(House())
+houses.append(House(0))
+houses.append(House(1))
 houses[0].createRect(16, 11)
 houses[1].createRect(685, 11)
 ###

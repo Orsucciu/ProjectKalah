@@ -53,29 +53,17 @@ def checkRules(box, game, houses, boxes, screen, fontObj): #this is going to che
 		if(box.seeds == 1): #the box have been sowed just now. you empty the opposite one
 			if(game.turn == 1 and box.number < 6):	
 				print "the opposite box is : " + str(getOppositeBox(box))
-				seeds = seeds + box.removeAllSeeds() #the removeAllSeeds functions returns the seeds removed
-				seeds = seeds + boxes[getOppositeBox(box)].removeAllSeeds()
-				houses[1].addSeeds(seeds)
+				if(boxes[getOppositeBox(box)].seeds > 0):
+					seeds = seeds + box.removeAllSeeds() #the removeAllSeeds functions returns the seeds removed
+					seeds = seeds + boxes[getOppositeBox(box)].removeAllSeeds()
+					houses[1].addSeeds(seeds)
 			if(game.turn == 2 and box.number > 5):
 				print "the opposite box is : " + str(getOppositeBox(box))
-				seeds = seeds + box.removeAllSeeds() #the removeAllSeeds functions returns the seeds removed
-				seeds = seeds + boxes[getOppositeBox(box)].removeAllSeeds()
-				houses[0].addSeeds(seeds)
-		
-	if(isinstance(box, House)): #check if the last play filled a player's house (and gave him another turn)
-		if(box == houses[0] and game.turn == 2):
-			print "player two gets another turn"
-			freeTurn = True
-		if(box == houses[1] and game.turn == 1):
-			print "player one gets another turn"
-			freeTurn = True
-	
-	if(freeTurn == False): #handle which player turn's it is.
-		if(game.turn == 1):
-			game.turn = 2
-		else:
-			game.turn = 1
-	
+				if(boxes[getOppositeBox(box)].seeds > 0):
+					seeds = seeds + box.removeAllSeeds() #the removeAllSeeds functions returns the seeds removed
+					seeds = seeds + boxes[getOppositeBox(box)].removeAllSeeds()
+					houses[0].addSeeds(seeds)
+
 	if(canCurrentPlayerPlay(boxes, game) == False):
 		emptyAllBoxes(boxes, houses)
 		print "game finished !"
@@ -86,6 +74,25 @@ def checkRules(box, game, houses, boxes, screen, fontObj): #this is going to che
 			textPrinter("player 2 won !!! Mazeltov", screen, fontObj, 148, 60, 3000)
 		if(result == 3):
 			textPrinter("it's a draw.", screen, fontObj, 148, 60, 3000)
+
+###BUGGED
+	#First you check if the player can play again
+	#if he does he plays again
+	if(isinstance(box, House)): #check if the last play filled a player's house (and give him another turn)
+		if(box.number == houses[0].number and game.turn == 2): #if the last filled house's number is the same as the player two's house (and therefore is the same house) AND it's player two's turn
+			print "player two gets another turn"
+			freeTurn = True
+		if(box.number == houses[1].number and game.turn == 1):
+			print "player one gets another turn"
+			freeTurn = True
+	
+	#if he can't you change turn
+	if(freeTurn == False): #handle which player's turn it is.
+		if(game.turn == 1):
+			game.turn = 2
+		else:
+			game.turn = 1
+###
 
 def getOppositeBox(box): #takes a box as a parameter and returns the number|the box opposed to it
 	return (11 - box.number)
@@ -157,10 +164,11 @@ class Kalah: #Kalah object. the game board
 
 class House: #houses are where the seeds end up
 	
-	def __init__(self): #houses are really like boxes, but they can't move their dots out and stuff like that
+	def __init__(self, number): #houses are really like boxes, but they can't move their dots out and stuff like that
 		self.seeds = 0
 		self.dots = list()
 		self.house = [1,1]
+		self.number = number ###Useful to check which house is it exactly (since they're all the sames)
 	
 	def addSeed(self):
 		self.seeds = self.seeds + 1
@@ -279,8 +287,8 @@ class Box: #boxes are where the seeds are put
 		
 	def distributeSeeds(self, boxes, houses, game, screen, fontObj): #distribute the seeds in the boxes and houses. annoying as fuck
 		lastBox = None #this will contain the last object we put a seed in
-		
 		i = self.number
+		
 		while(self.seeds > 0 ):
 			
 			if(self.seeds > 0): #can be removed
@@ -290,7 +298,7 @@ class Box: #boxes are where the seeds are put
 					if(self.seeds == 1):
 						lastBox = boxes[i]
 						#checkRules(lastBox)
-				elif(i == 5):
+				elif(i == 5): #if we're at the fifth cell, there's special stuff to do
 					i = 6
 					houses[1].addSeed()
 					self.removeSeed()
@@ -310,12 +318,13 @@ class Box: #boxes are where the seeds are put
 						if(self.seeds == 1):
 							lastBox = boxes[0]
 							#checkRules(lastBox)
-		
-			if(isinstance(lastBox, Box) or isinstance(lastBox, House)):
-				checkRules(lastBox, game, houses, boxes, screen, fontObj)
 				
 			self.removeSeed()
 			#i = i + 1
+		
+		if(isinstance(lastBox, Box) or isinstance(lastBox, House)):
+			print "the last box is  : " + str(lastBox)
+			checkRules(lastBox, game, houses, boxes, screen, fontObj)
 
 class Dot: #dots are the seeds
 
