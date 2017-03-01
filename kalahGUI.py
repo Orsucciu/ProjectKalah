@@ -138,18 +138,20 @@ def canCurrentPlayerPlay(boxes, kalah): #says if the player of the current turn 
 			return False
 		
 def emptyAllBoxes(boxes, houses): #to be called when a player can't play anymore. it puts the remaining seeds in the corresponding house
-	seeds0 = 0
-	seeds1 = 0
+	#seeds0 = 0
+	#seeds1 = 0
 	for element in boxes:
 		if(element.number < 6):
-			seeds1 = seeds1 + element.getSeeds()
+			#seeds1 = seeds1 + element.getSeeds() #faulty line
+			houses[1].addSeeds(element.getSeeds())
 			element.removeAllSeeds()
-			houses[1].addSeeds(seeds1)
+			
 		
 		if(element.number > 5):
-			seeds0 = seeds0 + element.getSeeds()
+			#seeds0 = seeds0 + element.getSeeds()
+			houses[0].addSeeds(element.getSeeds())
 			element.removeAllSeeds()
-			houses[0].addSeeds(seeds0)
+			
 		
 
 class Kalah: #Kalah object. the game board
