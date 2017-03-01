@@ -3,6 +3,7 @@ import pygame
 from copy import copy
 import os, time, sys
 from random import randint
+import pickle
 
 #where the graphics are
 
@@ -69,10 +70,13 @@ def checkRules(box, game, houses, boxes, screen, fontObj): #this is going to che
 		print "game finished !"
 		result = whoWon(houses)
 		if(result == 0):
-			textPrinter("player 1 won !!! Mazeltov", screen, fontObj, 148, 60, 3000)
+			game.turn  = 0
+			textPrinter("player 1 won !!!", screen, fontObj, 148, 60, 3000)
 		if(result == 1):
-			textPrinter("player 2 won !!! Mazeltov", screen, fontObj, 148, 60, 3000)
+			game.turn  = 0
+			textPrinter("player 2 won !!!", screen, fontObj, 148, 60, 3000)
 		if(result == 3):
+			game.turn  = 0
 			textPrinter("it's a draw.", screen, fontObj, 148, 60, 3000)
 
 ###BUGGED
@@ -87,7 +91,7 @@ def checkRules(box, game, houses, boxes, screen, fontObj): #this is going to che
 			freeTurn = True
 	
 	#if he can't you change turn
-	if(freeTurn == False): #handle which player's turn it is.
+	if(freeTurn == False and game.turn != 0): #handle which player's turn it is.
 		if(game.turn == 1):
 			game.turn = 2
 		else:
@@ -123,8 +127,10 @@ def canCurrentPlayerPlay(boxes, kalah): #says if the player of the current turn 
 				seeds = seeds + element.getSeeds()
 			
 		if(seeds > 0):
+			print "the player can play; he has : " + str(seeds) + " seeds"
 			return True
 		else:
+			print "the player can't play; he has : " + str(seeds) + " seeds"
 			return False
 	
 	if(kalah.turn == 2):
@@ -133,9 +139,14 @@ def canCurrentPlayerPlay(boxes, kalah): #says if the player of the current turn 
 				seeds = seeds + element.getSeeds()
 			
 		if(seeds > 0):
+			print "the player can play; he has : " + str(seeds)
 			return True
 		else:
+			print "the player can play; he has : " + str(seeds) + " seeds"
 			return False
+		
+	if(kalah.turn == 0 or kalah.turn == 3):
+		return False
 		
 def emptyAllBoxes(boxes, houses): #to be called when a player can't play anymore. it puts the remaining seeds in the corresponding house
 	#seeds0 = 0
@@ -152,17 +163,36 @@ def emptyAllBoxes(boxes, houses): #to be called when a player can't play anymore
 			houses[0].addSeeds(element.getSeeds())
 			element.removeAllSeeds()
 			
+def printGameState(game, boxes, houses):
+	print " "
+	print "player's turn : " + str(game.turn)
+	print "left house's seeds : " + str(houses[0].seeds) + " right house's seeds : " + str(houses[1].seeds)
+	for element in boxes:
+		print "seeds in the box number " + str(element.number) + " : " + str(element.seeds)
 		
+def loadSave(game, boxes, houses, saveFile):
+	print "loading the save..."
+	almightyObj = pickle.load(saveFile)
+	game.turn = almightyObj[0][1]
+	for element in almightyObj:
+		if element[0] != "turn":
+			if element[0] <= 11:
+				boxes[element[0]].seeds = element[1]
+			else:
+				houses[element[0]].seeds = element[1]
+	os.remove("save.dump")
 
 class Kalah: #Kalah object. the game board
 
 	def __init__(self):
-		self.board = [4,4,4,4,4,4,4,4,4,4,4,4] #represent the board's boxes
 		self.houses = [0, 0] #represent the houses
 		self.turn = 1 #represent the player's turn. 1 for you, and 2 for anyone someone. Or whatever it doesn't matter
 
 	def getBoard(self):
 		return self.board
+	
+	def setTurn(self, number):
+		self.turn = number
 
 class House: #houses are where the seeds end up
 	
@@ -279,12 +309,10 @@ class Box: #boxes are where the seeds are put
 		#if(&&):		#on each click event, all the squares with this method will be called
 		boxCoords = self.getCoords() #if a box is being clicked, this function will return true
 		if(x >= boxCoords[0] and x <=boxCoords[0] + 80 and y >= boxCoords[1] and y <= boxCoords[1] + 80): #box's height and width are harcoded. could be changed in the future
-			print self
-			print self.number
+			'''print self
+			print self.number'''
 			return True
 		else:
-			#print "fail..." #those two are debug lines
-			#print "x = " + str(x) + " box.x = " + str(boxCoords[0]) + " box.width = " + str(80) + " y = " + str(y) + " box.y = " + str(boxCoords[1])
 			return False
 		
 	def distributeSeeds(self, boxes, houses, game, screen, fontObj): #distribute the seeds in the boxes and houses. annoying as fuck
@@ -322,10 +350,9 @@ class Box: #boxes are where the seeds are put
 							#checkRules(lastBox)
 				
 			self.removeSeed()
-			#i = i + 1
 		
 		if(isinstance(lastBox, Box) or isinstance(lastBox, House)):
-			print "the last box is  : " + str(lastBox)
+			#print "the last box is  : " + str(lastBox)
 			checkRules(lastBox, game, houses, boxes, screen, fontObj)
 
 class Dot: #dots are the seeds
@@ -345,12 +372,54 @@ class Dot: #dots are the seeds
 	def DrawDot(self, screen):
 		screen.blit(self.dot[0], self.dot[1])
 	
-	###dead code ?
-	'''def getRandCords(self, Pbox): #gives random coordinates inside the box
-		#the pbox arg is the Parent box, where the dot will be stored
-		box = Pbox.box[1]
-		x = randint(self.position[0] - 10, (self.position[0] + box[0]) - 10)  ### These two lines are to be modified lightly. So the dots stay far from the borders
-		y = randint(self.position[1] - 10, (self.position[1] + box[1]) - 10) ###
+class Button:
+	
+	def __init__(self, text, num):
+		self.num = num
+		self.text = text
+		self.rect = [1,1]
+	
+	def createRect(self, x, y, name): #name is the file name of the sprite
+		self.rect[0] = pygame.image.load(os.path.join("assets", str(name)+".png")).convert_alpha()
+		self.rect[1] = (x, y)
+	
+	def Draw(self, screen):
+		screen.blit(self.rect[0] , self.rect[1])
 		
-		return [x, y]'''
-	###
+	def getCoords(self):
+		return [ self.rect[1][0], self.rect[1][1], self.rect[0].get_width(), self.rect[0].get_height() ] #returns data in this order : box's x, box's y, box's width, box's height
+
+	def isClicked(self, x, y): #this function will determine if a box is being clicked or not
+								#on each click event, all the squares with this method will be called
+		boxCoords = self.getCoords() #if a box is being clicked, this function will return true
+		if(x >= boxCoords[0] and x <=boxCoords[0] + 80 and y >= boxCoords[1] and y <= boxCoords[1] + 80): #box's height and width are harcoded. could be changed in the future
+			return True
+		else:
+			return False
+		
+class ReloadGame(Button):
+	
+	def reload(self, game, boxes, houses):
+		print "reloading the game..."
+		game.turn = 1
+		for element in boxes:
+			element.seeds = 4
+		for element in houses:
+			element.seeds = 0
+		
+class SaveGame(Button):
+	
+	def save(self, game, boxes, houses, screen, fontObj, buttons, saveFile):
+		print "saving the game..."
+		try:
+			os.remove("save.dump")
+		except Exception:
+			print "file already deleted..."
+		saveFile = open("save.dump", "w+")
+		almightyObj = [["turn", game.turn]]
+		for element in boxes:
+			almightyObj.append([element.number, element.seeds])
+		for element in houses:
+			almightyObj.append([element.number, element.seeds])
+		
+		pickle.dump(almightyObj, saveFile)

@@ -10,6 +10,8 @@ import kalahGUI
 from kalahGUI import *
 import kalahKeyEvents
 from kalahKeyEvents import *
+import pickle
+import os.path
 
 game = Kalah()
 
@@ -18,7 +20,6 @@ loop = 1
 fontObj = initText() #prepare the font.
 screen = Prepare_window()
 assets = LoadImages()
-print assets
 pygame.key.set_repeat(400, 30)
 
 houses = list()
@@ -53,20 +54,20 @@ while(i < 12):
 	i = i +1
 ###
 
-#useless. just initialization and testing
-Draw(screen, assets)
-
-for element in houses:
-	element.Draw(screen)
-	
-for element in boxes:
-	print element.box[0]
-	print element.box[1]
-	print element.getCoords()
-	element.Draw(screen)
-	
-pygame.display.flip()	
+### button init
+reloadButton = ReloadGame("reload", 0)
+reloadButton.createRect(572, 11, "reload")
+saveButton = SaveGame("save", 1)
+saveButton.createRect(572, 11, "save")
+buttons = [reloadButton, saveButton]
 ###
+if(os.path.isfile("save.dump") == False): #if there isn't a save file, we make it
+	saveFile = open("save.dump", "w+")
+else:
+	#saveFile = open("save.dump", "w+")
+	print "save file found !"
+	saveFile = open("save.dump", "r+")#if the file exists, we read it
+	loadSave(game, boxes, houses, saveFile)
 
 while loop == 1:
 	
@@ -79,9 +80,13 @@ while loop == 1:
 		element.Draw(screen)
 		element.populate(screen) #populate has to be called last
 	
-	printText("player " + str(game.turn) + "'s turn.", screen, fontObj, 148, 20)
+	if(game.turn == 1 or game.turn == 2):
+		printText("player " + str(game.turn) + "'s turn.", screen, fontObj, 148, 20)
+		saveButton.Draw(screen)
+	else:
+		printText("game finished.", screen, fontObj, 148, 20)
+		reloadButton.Draw(screen)
 	
-	for event in pygame.event.get():   
-		KeyHandler(event, boxes, houses, game, screen, fontObj)
-	
+	for event in pygame.event.get():
+		KeyHandler(event, boxes, houses, game, screen, fontObj, buttons, saveFile)
 	pygame.display.flip()		#the elements are drawn in the order they are called -> the dots have to be last or they're overdrawn
