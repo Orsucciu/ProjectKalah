@@ -12,6 +12,8 @@ import kalahKeyEvents
 from kalahKeyEvents import *
 import pickle
 import os.path
+import AI
+from AI import *
 
 game = Kalah()
 
@@ -88,5 +90,8 @@ while loop == 1:
 		reloadButton.Draw(screen)
 	
 	for event in pygame.event.get():
-		KeyHandler(event, boxes, houses, game, screen, fontObj, buttons, saveFile)
+		if(game.turn == 1):
+			KeyHandler(event, boxes, houses, game, screen, fontObj, buttons, saveFile)
+		else:
+			AI.play(event, boxes, houses, game, screen, fontObj, buttons, saveFile)
 	pygame.display.flip()		#the elements are drawn in the order they are called -> the dots have to be last or they're overdrawn

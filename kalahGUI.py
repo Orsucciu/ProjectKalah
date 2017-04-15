@@ -172,14 +172,17 @@ def printGameState(game, boxes, houses):
 		
 def loadSave(game, boxes, houses, saveFile):
 	print "loading the save..."
-	almightyObj = pickle.load(saveFile)
-	game.turn = almightyObj[0][1]
-	for element in almightyObj:
-		if element[0] != "turn":
-			if element[0] <= 11:
-				boxes[element[0]].seeds = element[1]
-			else:
-				houses[element[0]].seeds = element[1]
+	try:
+		almightyObj = pickle.load(saveFile)
+		game.turn = almightyObj[0][1]
+		for element in almightyObj:
+			if element[0] != "turn":
+				if element[0] <= 11:
+					boxes[element[0]].seeds = element[1]
+				else:
+					houses[element[0]].seeds = element[1]
+	except:
+		print("error loading file !")
 	os.remove("save.dump")
 
 class Kalah: #Kalah object. the game board
