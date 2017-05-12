@@ -16,3 +16,5 @@ def simulateBoard(boxes, houses, game):
 	#this is the possible plays; additional play will be appended (plays.append[]) later
 	plays = []
 
+	###ce fichier devait recuperer l'etat du plateau, en faire une copie pour pouvoir faire des operations dessus sans affecter le vrai plateau
+	

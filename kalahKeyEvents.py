@@ -21,10 +21,6 @@ def KeyHandler(event, boxes, houses, game, screen, fontObj, buttons, saveFile): 
 				if((game.turn == 1 and element.number < 6) or (game.turn == 2 and element.number > 5)):
 					element.distributeSeeds(boxes, houses, game, screen, fontObj)
 				else:
-					'''print "**********"
-					printText("Invalid move !", screen, fontObj, 148, 60)
-					print "Invalid move. Cheater."
-					print "*********"'''
 					pygame.display.flip()
 					pygame.time.delay(1000) #i know this is dirty im' sorry
 											#i'm really sorry it's disgusting i doesn't even really does what i want	
